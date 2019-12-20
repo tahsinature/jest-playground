@@ -5,12 +5,13 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon src/server",
-    "test": "jest src/test"
+    "test": "jest src/test --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/jest": "^24.0.24",
     "axios": "^0.19.0",
     "express": "^4.17.1",
     "jest": "^24.9.0",

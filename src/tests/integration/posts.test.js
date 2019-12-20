@@ -1,5 +1,6 @@
 const request = require("supertest");
 const app = require("../../app");
+const { verifyToken } = require("../../controllers");
 
 let token;
 const exec = () =>
@@ -7,7 +8,7 @@ const exec = () =>
     .get("/posts")
     .set({ auth: token });
 
-describe("/ route", () => {
+describe("postman like tests", () => {
   beforeEach(() => {
     token = "valid_token";
   });
@@ -31,5 +32,29 @@ describe("/ route", () => {
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(100);
     done();
+  });
+});
+
+describe("test controller seperately by mocking", () => {
+  const req = { body: { token } };
+  const res = {
+    send: jest.fn(),
+    status: jest.fn().mockReturnThis()
+  };
+  beforeEach(() => {
+    req.body.token = "valid";
+  });
+
+  test("should return 400 reesponse if token is invalid", () => {
+    req.body.token = "invalid";
+    verifyToken(req, res);
+    expect(res.status).toBeCalledWith(400);
+    expect(res.send).toBeCalled();
+  });
+
+  test("should return 200 reesponse if token is valid", () => {
+    verifyToken(req, res);
+    expect(res.status).toBeCalledWith(200);
+    expect(res.send).toBeCalled();
   });
 });

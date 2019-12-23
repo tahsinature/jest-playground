@@ -1,6 +1,7 @@
 const axios = require("axios").default;
+const { checkAgainstExternalResource } = require("./util");
 
-module.exports.getAllPosts = (req, res, next) => {
+module.exports.getAllPosts = (req, res) => {
   const url = "https://jsonplaceholder.typicode.com/posts";
 
   axios
@@ -17,11 +18,17 @@ const verify = token => {
   return token === "valid";
 };
 
-module.exports.verifyToken = (req, res, next) => {
+module.exports.verifyToken = (req, res) => {
   const token = req.body.token;
 
   if (verify(token)) res.status(200).send("success");
   else res.status(400).send("invalid token");
+};
 
-  // res.send("response");
+module.exports.verifyAgainstExternalResources = (req, res) => {
+  const token = req.body.token;
+  const isValid = checkAgainstExternalResource(token);
+
+  if (isValid) res.status(200).send("valid");
+  else res.status(400).send("invalid");
 };
